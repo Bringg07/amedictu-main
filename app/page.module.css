@@ -1,0 +1,100 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  letter-spacing: -1px;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: var(--secondary);
+  margin-bottom: 3rem;
+  max-width: 600px;
+  animation: fadeIn 1s ease-out;
+}
+
+.cardContainer {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch; /* Make cards same height */
+  animation: fadeIn 1.2s ease-out;
+}
+
+.card {
+  background: var(--card-bg);
+  color: var(--text-main);
+  padding: 2.5rem 2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 300px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  background: var(--secondary); /* Change to a light teal background */
+  border-color: var(--primary-light);
+}
+
+.card:hover .button {
+  background: var(--primary-dark);
+  color: white !important; /* Ensure text remains visible */
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--primary);
+  text-align: center;
+}
+
+.cardText {
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+  text-align: center;
+  flex-grow: 1; /* Pushes button to bottom */
+}
+
+.button {
+  background: var(--primary);
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  transition: all 0.3s ease;
+  width: 100%;
+  text-align: center;
+  margin-top: auto; /* Aligns buttons to the bottom */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.875rem;
+}
+
+.button:hover {
+  background: var(--primary-dark);
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}

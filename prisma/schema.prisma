@@ -1,0 +1,169 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id_user      Int          @id @default(autoincrement())
+  username     String       @unique @db.VarChar(100)
+  password     String       @db.VarChar(255)
+  role         Role         @default(pasien)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  id_poli      Int?
+  nama_lengkap String?      @db.VarChar(150)
+  notifikasi   Notifikasi[]
+  pasien       Pasien?
+  poli         Poli?        @relation(fields: [id_poli], references: [id_poli])
+
+  @@index([id_poli], map: "users_id_poli_fkey")
+  @@map("users")
+}
+
+model Pasien {
+  id_pasien      Int            @id @default(autoincrement())
+  no_rekam_medis String         @unique @default(cuid()) @db.VarChar(50)
+  nama_depan     String         @db.VarChar(100)
+  nama_belakang  String         @db.VarChar(100)
+  alamat         String?        @db.Text
+  no_telp        String?        @db.VarChar(20)
+  tgl_lahir      DateTime?
+  jenis_kelamin  JenisKelamin?
+  gol_darah      GolonganDarah?
+  nik            String?        @unique @db.VarChar(20)
+  nama_darurat   String?        @db.VarChar(150)
+  hub_darurat    String?        @db.VarChar(50)
+  telp_darurat   String?        @db.VarChar(20)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  id_user        Int            @unique
+  antrian        Antrian[]
+  user           User           @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+  rekam_medis    RekamMedis[]
+
+  @@map("pasien")
+}
+
+model Poli {
+  id_poli   Int        @id @default(autoincrement())
+  nama_poli String     @db.VarChar(100)
+  deskripsi String?    @db.Text
+  status    StatusPoli @default(aktif)
+  createdAt DateTime   @default(now())
+  antrian   Antrian[]
+  users     User[]
+
+  @@map("poli")
+}
+
+model Antrian {
+  id_antrian      Int           @id @default(autoincrement())
+  nomor_antrian   Int
+  tanggal         DateTime      @db.Date
+  keluhan         String?       @db.Text
+  status          StatusAntrian @default(menunggu)
+  waktu_daftar    DateTime      @default(now())
+  waktu_dipanggil DateTime?
+  estimasi_tunggu Int?
+  id_pasien       Int
+  id_poli         Int
+  pasien          Pasien        @relation(fields: [id_pasien], references: [id_pasien], onDelete: Cascade)
+  poli            Poli          @relation(fields: [id_poli], references: [id_poli])
+
+  @@index([id_pasien], map: "antrian_id_pasien_fkey")
+  @@index([id_poli], map: "antrian_id_poli_fkey")
+  @@map("antrian")
+}
+
+model RekamMedis {
+  id_rekam_medis  Int      @id @default(autoincrement())
+  tanggal_periksa DateTime @db.Date
+  tekanan_darah   String?  @db.VarChar(20)
+  suhu            Decimal? @db.Decimal(4, 1)
+  denyut_nadi     Int?
+  berat_badan     Decimal? @db.Decimal(5, 1)
+  tinggi_badan    Decimal? @db.Decimal(5, 1)
+  saturasi        Decimal? @db.Decimal(4, 1)
+  keluhan         String   @db.Text
+  diagnosa        String?  @db.Text
+  tindakan        String?  @db.Text
+  resep_obat      String?  @db.Text
+  aturan_minum    String?  @db.Text
+  catatan         String?  @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  id_pasien       Int
+  pasien          Pasien   @relation(fields: [id_pasien], references: [id_pasien], onDelete: Cascade)
+
+  @@index([id_pasien], map: "rekam_medis_id_pasien_fkey")
+  @@map("rekam_medis")
+}
+
+model Notifikasi {
+  id_notifikasi Int             @id @default(autoincrement())
+  pesan         String          @db.Text
+  jenis         JenisNotifikasi
+  is_read       Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  id_user       Int
+  user          User            @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+
+  @@index([id_user], map: "notifikasi_id_user_fkey")
+  @@map("notifikasi")
+}
+
+model JadwalDokter {
+  id_jadwal   Int      @id @default(autoincrement())
+  nama_dokter String   @db.VarChar(150)
+  spesialis   String   @db.VarChar(100)
+  hari        String   @db.VarChar(20)
+  jam_mulai   String   @db.VarChar(10)
+  jam_selesai String   @db.VarChar(10)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("jadwal_dokter")
+}
+
+enum Role {
+  pasien
+  tenaga_medis
+  admin
+}
+
+enum JenisKelamin {
+  laki_laki
+  perempuan
+}
+
+enum GolonganDarah {
+  A
+  B
+  AB
+  O
+}
+
+enum StatusPoli {
+  aktif
+  nonaktif
+}
+
+enum StatusAntrian {
+  menunggu
+  dipanggil
+  diperiksa
+  selesai
+  dibatalkan
+}
+
+enum JenisNotifikasi {
+  antrian_dibuat
+  antrian_dipanggil
+  antrian_selesai
+  antrian_dibatalkan
+  info
+}

@@ -1,0 +1,94 @@
+.sidebar {
+  width: 250px;
+  background-color: var(--card-bg);
+  border-right: 1px solid #e2e8f0;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 0;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--primary);
+  padding: 0 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0 1rem;
+}
+
+.navItem {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-weight: 600;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.navItem:hover {
+  background-color: var(--secondary);
+  color: var(--primary-dark);
+}
+
+.navItemActive {
+  background-color: var(--primary);
+  color: white;
+}
+
+.navItemActive:hover {
+  background-color: var(--primary-dark);
+  color: white;
+}
+
+.logout {
+  margin-top: auto;
+  padding: 0 1rem;
+}
+
+.logoutBtn {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  color: var(--error);
+  font-weight: 600;
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.logoutBtn:hover {
+  background-color: #fff5f5;
+  border-color: #fed7d7;
+}
+
+/* Layout Wrapper for pages that use the sidebar */
+.layoutWrapper {
+  padding-left: 250px;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+}
+
+.mainContent {
+  padding: 2rem 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
