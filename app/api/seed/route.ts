@@ -2,6 +2,8 @@
 import { NextResponse } from "next/server";
 import pool from "@/lib/db";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const defaultDoctors = [
     ['dr. Budi Santoso', 'Dokter Umum', 'Senin', '08:00', '12:00'],
