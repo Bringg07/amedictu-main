@@ -5,6 +5,13 @@ import bcrypt from "bcryptjs";
 import pool from "@/lib/db";
 import { RowDataPacket } from "mysql2";
 
+const nextAuthSecret = process.env.NEXTAUTH_SECRET || process.env.SECRET;
+if (!nextAuthSecret && process.env.NODE_ENV === "production") {
+  throw new Error(
+    "NEXTAUTH_SECRET tidak terdefinisi. Setel env var NEXTAUTH_SECRET di environment produksi."
+  );
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -93,5 +100,5 @@ export const authOptions: NextAuthOptions = {
     maxAge: 24 * 60 * 60,
   },
 
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: nextAuthSecret,
 };
