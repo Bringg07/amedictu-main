@@ -28,14 +28,14 @@ export default function DataPasien() {
         .then(res => res.json())
         .then(res => {
           if (res.success) {
-            setFormData({
-              ...formData,
+            setFormData(prev => ({
+              ...prev,
               ...res.data,
               tgl_lahir: res.data.tgl_lahir ? res.data.tgl_lahir.split('T')[0] : "",
               password_lama: "",
               password_baru: "",
               konfirmasi_password_baru: ""
-            });
+            }));
           }
         })
         .finally(() => setLoading(false));
