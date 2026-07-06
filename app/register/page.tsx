@@ -46,7 +46,7 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        alert(data.message || "Registrasi gagal");
+        alert(data.error || "Registrasi gagal");
         return;
       }
 
@@ -171,18 +171,21 @@ export default function RegisterPage() {
 
             <div className={styles.formGroup}>
               <label htmlFor="username" className={styles.label}>
-                USERNAME
+                USERNAME (bebas)
               </label>
 
               <input
                 type="text"
                 id="username"
                 className={styles.input}
-                placeholder="Pilih username"
+                placeholder="Contoh: budi123 atau budi_santoso"
                 value={formData.username}
                 onChange={handleChange}
                 required
               />
+              <p style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '0.4rem' }}>
+                Username bebas, tidak perlu mengikuti format khusus.
+              </p>
             </div>
 
             <div className={styles.formGroup}>
