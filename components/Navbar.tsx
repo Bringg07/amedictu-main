@@ -1,7 +1,6 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import NotificationBell from "./NotificationBell";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -20,8 +19,6 @@ export default function Navbar() {
       zIndex: 10,
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-        <NotificationBell />
-        
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', paddingLeft: '1.5rem', borderLeft: '1px solid #f3f4f6' }}>
           <div style={{ textAlign: 'right' }}>
             <p style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-main)', margin: 0 }}>
