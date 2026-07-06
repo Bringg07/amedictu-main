@@ -26,18 +26,25 @@ export async function POST(req: NextRequest) {
       nik
     } = body;
 
-    if (!username || !password || !nama_depan || !nama_belakang) {
+    const sanitizedUsername = String(username || "").trim();
+    const sanitizedPassword = String(password || "");
+
+    if (!sanitizedUsername || !sanitizedPassword || !nama_depan || !nama_belakang) {
       return apiError(
         "Username, password, nama depan, dan nama belakang wajib diisi"
       );
     }
 
-    if (password !== konfirmasi_password) {
+    if (sanitizedPassword !== konfirmasi_password) {
       return apiError("Konfirmasi password tidak cocok");
     }
 
-    if (password.length < 8) {
+    if (sanitizedPassword.length < 8) {
       return apiError("Password minimal 8 karakter");
+    }
+
+    if (nik && !/^[0-9]{16}$/.test(String(nik))) {
+      return apiError("NIK harus 16 digit angka");
     }
 
     const conn = await pool.getConnection();
@@ -45,20 +52,31 @@ export async function POST(req: NextRequest) {
     try {
       const [existing] = await conn.query<any[]>(
         "SELECT id_user FROM users WHERE username = ?",
-        [username]
+        [sanitizedUsername]
       );
 
       if (existing.length > 0) {
         return apiError("Username sudah digunakan", 409);
       }
 
-      const hashedPassword = await bcrypt.hash(password, 12);
+      if (nik) {
+        const [existingNik] = await conn.query<any[]>(
+          "SELECT id_pasien FROM pasien WHERE nik = ?",
+          [nik]
+        );
+
+        if (existingNik.length > 0) {
+          return apiError("NIK sudah digunakan", 409);
+        }
+      }
+
+      const hashedPassword = await bcrypt.hash(sanitizedPassword, 12);
 
       const [userResult] = await conn.query<any>(
         `INSERT INTO users 
         (username, password, role, createdAt, updatedAt) 
         VALUES (?, ?, 'pasien', NOW(), NOW())`,
-        [username, hashedPassword]
+        [sanitizedUsername, hashedPassword]
       );
 
       if (!userResult.insertId) {
@@ -90,7 +108,7 @@ export async function POST(req: NextRequest) {
           nama_belakang,
           no_telp || null,
           alamat || null,
-          tgl_lahir || null,
+          tgl_lahir ? new Date(tgl_lahir) : null,
           jenis_kelamin || null,
           gol_darah || null,
           nik || null,

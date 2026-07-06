@@ -12,10 +12,12 @@ export default function RegisterPage() {
     nik: "",
     username: "",
     password: "",
+    konfirmasi_password: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const router = useRouter();
 
@@ -29,6 +31,23 @@ export default function RegisterPage() {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setError("");
+
+    if (formData.password !== formData.konfirmasi_password) {
+      setError("Password dan konfirmasi password tidak cocok.");
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError("Password minimal 8 karakter.");
+      return;
+    }
+
+    if (formData.nik && !/^[0-9]{16}$/.test(formData.nik)) {
+      setError("NIK harus 16 digit angka.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -39,14 +58,13 @@ export default function RegisterPage() {
         },
         body: JSON.stringify({
           ...formData,
-          konfirmasi_password: formData.password,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        alert(data.error || "Registrasi gagal");
+        setError(data.error || "Registrasi gagal");
         return;
       }
 
@@ -54,7 +72,7 @@ export default function RegisterPage() {
       router.push("/login");
     } catch (error) {
       console.error("REGISTER ERROR:", error);
-      alert("Terjadi kesalahan saat registrasi");
+      setError("Terjadi kesalahan saat registrasi. Silakan coba lagi.");
     } finally {
       setLoading(false);
     }
@@ -107,6 +125,19 @@ export default function RegisterPage() {
           </p>
 
           <form onSubmit={handleRegister}>
+            {error && (
+              <div style={{
+                backgroundColor: '#fee2e2',
+                color: '#b91c1c',
+                padding: '1rem',
+                borderRadius: '0.75rem',
+                marginBottom: '1.5rem',
+                fontWeight: 600,
+              }}>
+                {error}
+              </div>
+            )}
+
             <div
               style={{
                 display: "flex",
@@ -240,6 +271,24 @@ export default function RegisterPage() {
                     </svg>
                   )}
                 </span>
+              </div>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="konfirmasi_password" className={styles.label}>
+                KONFIRMASI PASSWORD
+              </label>
+
+              <div className={styles.passwordField}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="konfirmasi_password"
+                  className={styles.input}
+                  placeholder="Ulangi password"
+                  value={formData.konfirmasi_password}
+                  onChange={handleChange}
+                  required
+                />
               </div>
             </div>
 
